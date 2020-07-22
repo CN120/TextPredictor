@@ -57,16 +57,18 @@ def alpha(event):
         rel_words = com_words
     elif typed_char == '\x7f':  #backspace
         # if(event.state=='8'):
-        print(event.state)
-        # if event.state==Mod1:
+        # print(event.state)
         txt.delete('insert',tk.END)
-        cur_word = cur_word[:-1]
-        cur_index =  txt.index('insert')
+        cur_index =  txt.index('insert')    
+        if txt.get('insert-1c',tk.INSERT).isalnum():
+            cur_word = txt.get('1.0',tk.END).split()[-1]
+            try:
+                txt.insert(tk.END,rel_words[0][len(cur_word):],'gray')
+            except:
+                pass
+        else:
+            cur_word=''
         rel_words = com_words[np.char.startswith(com_words,cur_word)]
-        try:
-            txt.insert(tk.END,rel_words[0][len(cur_word):],'gray')
-        except:
-            pass
         txt.mark_set("insert", cur_index)
         print("word:",cur_word)
     else:
