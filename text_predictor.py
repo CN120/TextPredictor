@@ -23,7 +23,8 @@ appFont = font.Font(family='menlo', size=12)
 
 txt = tk.Text(root,highlightthickness=0 , font = appFont, wrap=tk.WORD)
 txt.pack(fill=tk.BOTH,side='left', expand=1)
-txt.tag_configure('gray', foreground='#bfbfbf')
+txt.tag_configure('prediction', foreground='#bfbfbf')
+
 
 def alpha(event):
     global cur_word, rel_words
@@ -43,14 +44,14 @@ def alpha(event):
             while(len(guess_word)==len(cur_word)):
                 idx+=1
                 guess_word = rel_words[idx]
-            txt.insert(tk.END,guess_word[len(cur_word):],'gray')
+            txt.insert(tk.END,guess_word[len(cur_word):],'prediction')
         except:
             pass
         print(txt.index('insert'))
         txt.mark_set("insert", cur_index)
         print("word:",cur_word)
     elif typed_char == '\t':
-        txt.tag_remove("gray",  "1.0", tk.END)
+        txt.tag_remove("prediction",  "1.0", tk.END)
         txt.mark_set("insert", tk.END)
         txt.insert(tk.END,' ')
         cur_word = ''
@@ -59,16 +60,17 @@ def alpha(event):
         # if(event.state=='8'):
         # print(event.state)
         txt.delete('insert',tk.END)
-        cur_index =  txt.index('insert')    
+        cur_index =  txt.index('insert') 
+           
         if txt.get('insert-1c',tk.INSERT).isalnum():
             cur_word = txt.get('1.0',tk.END).split()[-1]
+            rel_words = com_words[np.char.startswith(com_words,cur_word)]
             try:
-                txt.insert(tk.END,rel_words[0][len(cur_word):],'gray')
+                txt.insert(tk.END,rel_words[0][len(cur_word):],'prediction')
             except:
                 pass
         else:
             cur_word=''
-        rel_words = com_words[np.char.startswith(com_words,cur_word)]
         txt.mark_set("insert", cur_index)
         print("word:",cur_word)
     else:
@@ -78,18 +80,11 @@ def alpha(event):
 
 def tabdown(event):
     return ("break")
-    # global cur_word, rel_words
-    # txt.delete('insert',tk.END)
-    # root.update()
-    # txt.insert(tk.END,rel_words[0][len(cur_word):])
-    # rel_words = com_words
-    # print("yes")
 
 
 txt.bind("<KeyRelease>", alpha)
 txt.bind("<Tab>", tabdown)
-# # apply the tag "red" 
-# txt.highlight_pattern("word", "gray")
+
 scrollbar = ttk.Scrollbar(root)
 scrollbar.pack(side='right',fill='y')
 txt.config(yscrollcommand=scrollbar.set)
