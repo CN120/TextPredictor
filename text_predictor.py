@@ -1,8 +1,12 @@
+import numpy as np
 import tkinter as tk
 from tkinter import ttk as ttk
 from time import sleep
 from tkinter import font
 
+
+com_words = np.loadtxt("google-10000-english-usa-no-swears.txt", dtype=str, delimiter='\n')
+print(com_words)
 cur_word = ''
 
 root = tk.Tk()
@@ -11,21 +15,31 @@ appFont = font.Font(family='menlo', size=12)
 
 txt = tk.Text(root,highlightthickness=0 , font = appFont)
 txt.pack(fill=tk.BOTH,side='left', expand=1)
+txt.tag_configure('gray', foreground='#bfbfbf')
+
 def key(event):
-    typed_char = eval(repr(event.char))
-    print(repr(event.char))
+    global cur_word
+    txt.delete('insert',tk.END)
+    print("pressed", repr(event.char))
+    typed_char = event.char
     if typed_char.isalnum():
-        print("pressed", repr(event.char))
+        cur_word+=typed_char
         cur_index =  txt.index('insert')
-        txt.insert(tk.END,'a')
+        word_bool_arr = np.char.startswith(com_words,cur_word)
+        found_list = com_words[word_bool_arr]
+        try:
+            txt.insert(tk.END,found_list[0][len(cur_word):],'gray')
+        except:
+            pass
         print(txt.index('insert'))
         txt.mark_set("insert", cur_index)
-        # txt.mark_set("%s-4c" % tk.INSERT, tk.INSERT)
-        # txt.icursor(tk.END-1)
+        print(cur_word)
+    else:
+        cur_word = ''
+
 
 
 txt.bind("<KeyRelease>", key)
-# txt.tag_configure("gray", foreground="gray")
 # # apply the tag "red" 
 # txt.highlight_pattern("word", "gray")
 scrollbar = ttk.Scrollbar(root)
