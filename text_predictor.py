@@ -23,8 +23,6 @@ txt = tk.Text(root,highlightthickness=0 , font = appFont, wrap=tk.WORD)
 txt.pack(fill=tk.BOTH,side='left', expand=1)
 txt.tag_configure('prediction', foreground='#bfbfbf')
 
-# class TextPredictor:
-#     def __init__(self, parent, *args, **kwargs):
 
 def alpha(event):
     global cur_word, rel_words
@@ -34,7 +32,6 @@ def alpha(event):
     if typed_key.isalnum():
         #delete previous guess
         txt.delete('insert',tk.END)
-        #add le
         cur_word+=typed_key.lower()
         cur_index =  txt.index('insert')
         rel_words = rel_words[np.char.startswith(rel_words,cur_word)]
@@ -50,6 +47,7 @@ def alpha(event):
         print(txt.index('insert'))
         txt.mark_set("insert", cur_index)
         print("word:",cur_word)
+    
     elif typed_key == '\t':
         txt.tag_remove("prediction",  "1.0", tk.END)
         txt.mark_set("insert", tk.END)
@@ -59,7 +57,8 @@ def alpha(event):
             txt.insert(tk.END,'\t')
         cur_word = ''
         rel_words = com_words
-    elif event.keysym == 'BackSpace':  #backspace
+
+    elif event.keysym == 'BackSpace':  
         # if(event.state=='8'):
         # print(event.state)
         txt.delete('insert',tk.END)
@@ -76,6 +75,7 @@ def alpha(event):
             cur_word = ''
         txt.mark_set("insert", cur_index)
         print("word:",cur_word)
+
     elif event.keysym == 'space':
         txt.delete('insert',tk.END)
         cur_word = ''
@@ -86,15 +86,11 @@ def alpha(event):
     #     rel_words = com_words
 
 
-
+#disable normal tab function
 def tabdown(event):
     return ("break")
 
-def key(event):
-    alpha(event)
-    return
 
-# txt.bind("<Key>", key)
 txt.bind("<KeyRelease>", alpha)
 txt.bind("<Tab>", tabdown)
 # txt.bind("<Meta_L-s>", lambda: print("SAVE"))
